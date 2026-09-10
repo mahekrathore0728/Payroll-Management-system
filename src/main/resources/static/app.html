@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus HRMS - Payroll Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>
+
+<!-- Sidebar Navigation -->
+<nav id="sidebar">
+    <div class="brand">
+        <div class="brand-icon"><i class="bi bi-wallet2"></i></div>
+        <div>
+            <div class="brand-text">NEXUS HRMS</div>
+            <div class="brand-sub">Enterprise Payroll</div>
+        </div>
+    </div>
+
+    <div class="nav-menu">
+        <div class="nav-section">Main</div>
+        <a href="#dashboard" class="nav-link" id="nav-dashboard">
+            <i class="bi bi-grid-1x2-fill"></i> <span>Dashboard</span>
+        </a>
+
+        <!-- Admin / HR Items -->
+        <div class="role-admin-hr">
+            <div class="nav-section">Organization</div>
+            <a href="#employees" class="nav-link" id="nav-employees">
+                <i class="bi bi-people-fill"></i> <span>Employees</span>
+            </a>
+            <a href="#departments" class="nav-link" id="nav-departments">
+                <i class="bi bi-diagram-3-fill"></i> <span>Departments</span>
+            </a>
+
+            <div class="nav-section">Payroll & HR</div>
+            <a href="#salary" class="nav-link" id="nav-salary">
+                <i class="bi bi-cash-stack"></i> <span>Salary Structure</span>
+            </a>
+            <a href="#payroll" class="nav-link" id="nav-payroll">
+                <i class="bi bi-calculator-fill"></i> <span>Payroll Processing</span>
+            </a>
+            <a href="#attendance" class="nav-link" id="nav-attendance">
+                <i class="bi bi-calendar-check-fill"></i> <span>Attendance</span>
+            </a>
+            <a href="#leaves" class="nav-link" id="nav-leaves">
+                <i class="bi bi-calendar2-range-fill"></i> <span>Leave Management</span>
+            </a>
+        </div>
+
+        <!-- Manager Items -->
+        <div class="role-manager d-none">
+            <div class="nav-section">Team Management</div>
+            <a href="#team" class="nav-link" id="nav-team">
+                <i class="bi bi-person-workspace"></i> <span>My Team</span>
+            </a>
+            <a href="#team-attendance" class="nav-link" id="nav-team-attendance">
+                <i class="bi bi-calendar-check-fill"></i> <span>Team Attendance</span>
+            </a>
+            <a href="#team-leaves" class="nav-link" id="nav-team-leaves">
+                <i class="bi bi-calendar2-range-fill"></i> <span>Leave Requests</span>
+            </a>
+            <a href="#team-payroll" class="nav-link" id="nav-team-payroll">
+                <i class="bi bi-receipt"></i> <span>Team Payroll</span>
+            </a>
+        </div>
+
+        <!-- Employee Self-Service Items -->
+        <div class="role-employee d-none">
+            <div class="nav-section">My Self-Service</div>
+            <a href="#my-attendance" class="nav-link" id="nav-my-attendance">
+                <i class="bi bi-calendar-check-fill"></i> <span>My Attendance</span>
+            </a>
+            <a href="#my-leaves" class="nav-link" id="nav-my-leaves">
+                <i class="bi bi-calendar2-range-fill"></i> <span>My Leaves</span>
+            </a>
+            <a href="#my-salary" class="nav-link" id="nav-my-salary">
+                <i class="bi bi-cash-stack"></i> <span>My Salary</span>
+            </a>
+            <a href="#my-payslips" class="nav-link" id="nav-my-payslips">
+                <i class="bi bi-file-earmark-pdf-fill"></i> <span>My Payslips</span>
+            </a>
+        </div>
+
+        <div class="nav-section">System</div>
+        <a href="#reports" class="nav-link role-reports" id="nav-reports">
+            <i class="bi bi-bar-chart-line-fill"></i> <span>Reports</span>
+        </a>
+        <a href="#users" class="nav-link role-admin-only d-none" id="nav-users">
+            <i class="bi bi-shield-lock-fill"></i> <span>User Accounts</span>
+        </a>
+        <a href="#audit-logs" class="nav-link role-admin-only d-none" id="nav-audit-logs">
+            <i class="bi bi-journal-text"></i> <span>Audit Logs</span>
+        </a>
+        <a href="#notifications" class="nav-link" id="nav-notifications">
+            <i class="bi bi-bell-fill"></i> <span>Notifications</span>
+            <span class="badge bg-danger ms-auto d-none" id="sidebarNotifBadge">0</span>
+        </a>
+        <a href="#profile" class="nav-link" id="nav-profile">
+            <i class="bi bi-person-circle"></i> <span>Profile & Settings</span>
+        </a>
+    </div>
+
+    <!-- Bottom User Bar -->
+    <div class="user-info-bottom">
+        <div class="avatar-circle" id="sidebarAvatar">U</div>
+        <div class="overflow-hidden flex-grow-1">
+            <div class="text-truncate fw-semibold text-white small" id="sidebarUserName">User</div>
+            <div class="text-truncate text-muted" style="font-size: 11px;" id="sidebarUserRole">ROLE</div>
+        </div>
+        <button class="btn btn-sm btn-outline-light border-0" onclick="auth.logout()" title="Logout">
+            <i class="bi bi-box-arrow-right fs-6"></i>
+        </button>
+    </div>
+</nav><div id="main-wrapper">
+    <!-- Top Navbar -->
+    <header id="top-navbar">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-sm btn-light border d-lg-none" id="sidebarToggleBtn">
+                <i class="bi bi-list fs-5"></i>
+            </button>
+            <h5 class="m-0 fw-bold text-navy" id="topPageTitle">Dashboard</h5>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+            <!-- Notifications Dropdown -->
+            <div class="dropdown">
+                <button class="btn-icon" id="notifBtn" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                    <i class="bi bi-bell"></i>
+                    <span class="badge-counter d-none" id="topNotifBadge">0</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end shadow-lg p-0" style="width: 320px; border-radius: 10px;">
+                    <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
+                        <span class="fw-bold small text-navy">Notifications</span>
+                        <button class="btn btn-sm btn-link text-decoration-none p-0 small" onclick="app.markAllNotificationsRead()">Mark read</button>
+                    </div>
+                    <div id="notifDropdownList" style="max-height: 280px; overflow-y: auto;">
+                        <div class="p-3 text-center text-muted small">No new notifications</div>
+                    </div>
+                    <div class="p-2 border-top text-center bg-light">
+                        <a href="#notifications" class="small text-decoration-none text-primary fw-semibold">View all</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Badge -->
+            <div class="dropdown">
+                <div class="user-profile-badge" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="avatar-circle" id="topAvatar">U</div>
+                    <div class="d-none d-md-block text-start">
+                        <div class="fw-semibold small text-navy" id="topUserName">User Name</div>
+                        <span class="badge bg-primary-subtle text-primary border" style="font-size: 10px;" id="topUserRoleBadge">ROLE</span>
+                    </div>
+                    <i class="bi bi-chevron-down text-muted small ms-1"></i>
+                </div>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                    <li><a class="dropdown-item py-2" href="#profile"><i class="bi bi-person me-2 text-primary"></i> My Profile</a></li>
+                    <li><a class="dropdown-item py-2" href="#profile"><i class="bi bi-key me-2 text-warning"></i> Change Password</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item py-2 text-danger" href="javascript:void(0)" onclick="auth.logout()"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Content Container -->
+    <main id="page-content">
+        <!-- 1. ADMIN / HR DASHBOARD VIEW -->
+        <div id="view-dashboard" class="content-view d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold text-navy mb-1">Executive Dashboard</h4>
+                    <p class="text-muted small mb-0">Overview of workforce metrics, payroll disbursements, and attendance.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary btn-sm" onclick="app.showProcessPayrollModal()"><i class="bi bi-calculator me-1"></i> Run Payroll</button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="app.showAddEmployeeModal()"><i class="bi bi-person-plus me-1"></i> Add Employee</button>
+                </div>
+            </div>
+
+            <!-- Metric Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="stat-title">Active Employees</div>
+                            <div class="stat-value" id="dashTotalEmployees">0</div>
+                            <div class="stat-desc text-success"><i class="bi bi-arrow-up"></i> Total workforce</div>
+                        </div>
+                        <div class="stat-icon bg-primary-subtle text-primary"><i class="bi bi-people-fill"></i></div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="stat-title">Departments</div>
+                            <div class="stat-value" id="dashTotalDepartments">0</div>
+                            <div class="stat-desc text-muted">Operating units</div>
+                        </div>
+                        <div class="stat-icon bg-info-subtle text-info"><i class="bi bi-diagram-3-fill"></i></div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="stat-title">Month Payroll</div>
+                            <div class="stat-value" id="dashCurrentPayroll">₹0.00</div>
+                            <div class="stat-desc text-muted">Current period</div>
+                        </div>
+                        <div class="stat-icon bg-success-subtle text-success"><i class="bi bi-cash-stack"></i></div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="stat-title">Pending Leaves</div>
+                            <div class="stat-value" id="dashPendingLeaves">0</div>
+                            <div class="stat-desc text-warning"><i class="bi bi-clock"></i> Awaiting approval</div>
+                        </div>
+                        <div class="stat-icon bg-warning-subtle text-warning"><i class="bi bi-calendar2-range-fill"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Smart Action Alerts Card -->
+            <div id="dashAlertsContainer" class="mb-4"></div>
+
+            <!-- Charts -->
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-lg-8">
+                    <div class="card h-100">
+                        <div class="card-header"><h6 class="card-title"><i class="bi bi-bar-chart-fill me-2 text-primary"></i> Monthly Payroll Trend</h6></div>
+                        <div class="card-body"><canvas id="payrollChart" style="max-height: 280px;"></canvas></div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-header"><h6 class="card-title"><i class="bi bi-pie-chart-fill me-2 text-primary"></i> Department Staffing</h6></div>
+                        <div class="card-body d-flex align-items-center justify-content-center"><canvas id="deptChart" style="max-height: 250px;"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Summary & Recent Payrolls -->
+            <div class="row g-4">
+                <div class="col-12 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="card-title"><i class="bi bi-clock-history me-2 text-primary"></i> Today's Attendance</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item d-flex justify-content-between px-0">
+                                    <span><i class="bi bi-check-circle-fill text-success me-2"></i> Present</span>
+                                    <span class="badge badge-present" id="dashAttPresent">0</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between px-0">
+                                    <span><i class="bi bi-exclamation-triangle-fill text-warning me-2"></i> Late</span>
+                                    <span class="badge badge-late" id="dashAttLate">0</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between px-0">
+                                    <span><i class="bi bi-x-circle-fill text-danger me-2"></i> Absent</span>
+                                    <span class="badge badge-absent" id="dashAttAbsent">0</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between px-0">
+                                    <span><i class="bi bi-calendar-minus-fill text-primary me-2"></i> On Leave</span>
+                                    <span class="badge badge-leave" id="dashAttLeave">0</span>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="#attendance" class="btn btn-sm btn-outline-primary w-100">View Full Attendance Sheet</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-8">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="card-title"><i class="bi bi-receipt me-2 text-primary"></i> Recent Payroll Disbursements</h6>
+                            <a href="#payroll" class="btn btn-sm btn-link text-decoration-none">View All</a>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-custom">
+                                    <thead><tr><th>Ref #</th><th>Employee</th><th>Period</th><th>Net Salary</th><th>Status</th><th>Action</th></tr></thead>
+                                    <tbody id="dashRecentPayrollsBody"><tr><td colspan="6" class="text-center py-3 text-muted">No recent payrolls recorded.</td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. MANAGER DASHBOARD VIEW -->
+        <div id="view-manager-dashboard" class="content-view d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold text-navy mb-1">Manager Department Hub</h4>
+                    <p class="text-muted small mb-0">Oversee team members, authorizations, and attendance logs.</p>
+                </div>
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-title">Team Members</div>
+                        <div class="stat-value" id="mgrTeamCount">0</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-title">Team Attendance</div>
+                        <div class="stat-value text-success" id="mgrTeamAttRate">0%</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-title">Pending Leaves</div>
+                        <div class="stat-value text-warning" id="mgrPendingLeaves">0</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-title">Team Payroll</div>
+                        <div class="stat-value" id="mgrTeamPayroll">₹0.00</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header"><h6 class="card-title text-warning"><i class="bi bi-clock-history me-2"></i> Team Pending Leave Requests</h6></div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead><tr><th>Employee</th><th>Type</th><th>Duration</th><th>Days</th><th>Reason</th><th>Actions</th></tr></thead>
+                            <tbody id="mgrPendingLeavesBody"><tr><td colspan="6" class="text-center py-3 text-muted">No pending requests.</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header"><h6 class="card-title text-primary"><i class="bi bi-people me-2"></i> Team Roster</h6></div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead><tr><th>Code</th><th>Name</th><th>Designation</th><th>Email</th><th>Phone</th><th>Status</th></tr></thead>
+                            <tbody id="mgrTeamMembersBody"><tr><td colspan="6" class="text-center py-3 text-muted">Loading team...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. EMPLOYEE DASHBOARD VIEW -->
+        <div id="view-employee-dashboard" class="content-view d-none">
+            <div class="card text-white border-0 shadow mb-4 p-4" style="background: linear-gradient(135deg, #1e3a8a, #2563eb) !important;">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                    <div>
+                        <h3 class="fw-bold mb-1" id="empWelcomeName">Welcome, Employee</h3>
+                        <p class="mb-0 text-white-50" id="empWelcomeRole">Employee Portal</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-light fw-bold text-primary btn-sm px-3" id="empCheckInBtn" onclick="app.employeeCheckIn()"><i class="bi bi-box-arrow-in-right me-1"></i> Daily Check-In</button>
+                        <button class="btn btn-outline-light btn-sm px-3" id="empCheckOutBtn" onclick="app.employeeCheckOut()"><i class="bi bi-box-arrow-right me-1"></i> Daily Check-Out</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-title">Net Salary</div>
+                        <div class="stat-value text-success" id="empNetSalary">₹0.00</div>
+                        <div class="stat-desc text-muted">Gross: <span id="empGrossSalary">₹0.00</span></div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-title">Attendance Rate</div>
+                        <div class="stat-value" id="empAttRate">0%</div>
+                        <div class="stat-desc text-muted">Present: <span id="empPresentDays">0</span> | Absent: <span id="empAbsentDays">0</span></div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-title">Remaining Leaves</div>
+                        <div class="stat-value text-primary" id="empTotalLeaves">0</div>
+                        <div class="stat-desc text-muted">Casual: <span id="empCasualLeaves">0</span> | Sick: <span id="empSickLeaves">0</span></div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-title">Leave Request</div>
+                        <button class="btn btn-sm btn-primary w-100 mt-1" onclick="app.showApplyLeaveModal()"><i class="bi bi-calendar-plus me-1"></i> Apply For Leave</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header"><h6 class="card-title text-primary"><i class="bi bi-file-earmark-pdf me-2"></i> Latest Generated Payslip</h6></div>
+                <div class="card-body" id="empLatestPayslipBox"><p class="text-muted small mb-0">No payslips have been processed yet.</p></div>
+            </div>
+            <div class="row g-4">
+                <div class="col-12 col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="card-title"><i class="bi bi-calendar2-range me-2 text-primary"></i> My Recent Leaves</h6>
+                            <button class="btn btn-sm btn-link text-decoration-none" onclick="app.showApplyLeaveModal()">+ Apply</button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-custom">
+                                    <thead><tr><th>Type</th><th>Duration</th><th>Days</th><th>Status</th></tr></thead>
+                                    <tbody id="empRecentLeavesBody"><tr><td colspan="4" class="text-center py-3 text-muted">No leaves.</td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header"><h6 class="card-title"><i class="bi bi-calendar-check me-2 text-primary"></i> My Attendance Logs</h6></div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-custom">
+                                    <thead><tr><th>Date</th><th>In</th><th>Out</th><th>Status</th></tr></thead>
+                                    <tbody id="empRecentAttendanceBody"><tr><td colspan="4" class="text-center py-3 text-muted">No attendance.</td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        <!-- 4. EMPLOYEES VIEW -->
+        <div id="view-employees" class="content-view d-none">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+                <div>
+                    <h4 class="fw-bold text-navy mb-1">Employee Directory</h4>
+                    <p class="text-muted small mb-0">Maintain personnel files, organizational roles, and employment statuses.</p>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="app.showAddEmployeeModal()"><i class="bi bi-person-plus-fill me-1"></i> Add Employee</button>
+            </div>
+            <div class="card p-3 mb-4">
+                <div class="row g-2">
+                    <div class="col-12 col-md-5">
+                        <input type="text" class="form-control form-control-sm" id="empSearchInput" placeholder="Search by name, code, email, designation..." onkeyup="app.filterEmployees()">
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <select class="form-select form-select-sm" id="empDeptFilter" onchange="app.filterEmployees()">
+                            <option value="">All Departments</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2">
+                        <select class="form-select form-select-sm" id="empStatusFilter" onchange="app.filterEmployees()">
+                            <option value="">All Statuses</option>
+                            <option value="ACTIVE">ACTIVE</option>
+                            <option value="INACTIVE">INACTIVE</option>
+                            <option value="ON_LEAVE">ON_LEAVE</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <button class="btn btn-outline-secondary btn-sm w-100" onclick="app.resetEmployeeFilters()">Reset</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead>
+                                <tr><th>Code</th><th>Name</th><th>Department</th><th>Designation</th><th>Email</th><th>Joining</th><th>Status</th><th class="text-end">Actions</th></tr>
+                            </thead>
+                            <tbody id="employeesTableBody"><tr><td colspan="8" class="text-center py-4 text-muted">No employees found.</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. DEPARTMENTS VIEW -->
+        <div id="view-departments" class="content-view d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold text-navy mb-1">Department Structure</h4>
+                    <p class="text-muted small mb-0">Manage business divisions and assign departmental managers.</p>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="app.showAddDepartmentModal()"><i class="bi bi-folder-plus me-1"></i> Add Department</button>
+            </div>
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead><tr><th>Code</th><th>Department Name</th><th>Assigned Manager</th><th>Staff</th><th>Description</th><th class="text-end">Actions</th></tr></thead>
+                            <tbody id="departmentsTableBody"><tr><td colspan="6" class="text-center py-4 text-muted">No departments found.</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. SALARY STRUCTURE VIEW -->
+        <div id="view-salary" class="content-view d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold text-navy mb-1">Salary Structures</h4>
+                    <p class="text-muted small mb-0">Define base pay, house rent, dearness allowances, PF, and tax deductions.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead><tr><th>Employee</th><th>Dept</th><th>Basic</th><th>HRA</th><th>DA</th><th>PF</th><th>Tax</th><th>Gross</th><th>Net</th><th class="text-end">Action</th></tr></thead>
+                            <tbody id="salariesTableBody"><tr><td colspan="10" class="text-center py-4 text-muted">No salary structures configured yet.</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. PAYROLL PROCESSING VIEW -->
+        <div id="view-payroll" class="content-view d-none">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+                <div>
+                    <h4 class="fw-bold text-navy mb-1">Payroll Processing & History</h4>
+                    <p class="text-muted small mb-0">Compute employee salaries, record payouts, and generate PDF payslips.</p>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="app.showProcessPayrollModal()"><i class="bi bi-calculator me-1"></i> Process Payroll</button>
+            </div>
+            <div class="card p-3 mb-4">
+                <div class="row g-2 align-items-center">
+                    <div class="col-12 col-sm-4">
+                        <select class="form-select form-select-sm" id="payrollMonthFilter">
+                            <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+                            <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+                            <option value="7">July</option><option value="8">August</option><option value="9" selected>September</option>
+                            <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <input type="number" class="form-control form-control-sm" id="payrollYearFilter" value="2026" min="2020" max="2030">
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="app.loadPayrollRecords()"><i class="bi bi-funnel me-1"></i> Filter Period</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead><tr><th>Ref #</th><th>Employee</th><th>Period</th><th>Gross</th><th>Deductions</th><th>Net Salary</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+                            <tbody id="payrollTableBody"><tr><td colspan="8" class="text-center py-4 text-muted">No payroll records for this period.</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. ATTENDANCE VIEW -->
+        <div id="view-attendance" class="content-view d-none">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+                <div>
+                    <h4 class="fw-bold text-navy mb-1">Workforce Attendance</h4>
+                    <p class="text-muted small mb-0">Record and review daily check-in logs and work hours.</p>
+                </div>
+                <button class="btn btn-primary btn-sm role-admin-hr" onclick="app.showMarkAttendanceModal()"><i class="bi bi-calendar-plus me-1"></i> Mark Attendance</button>
+            </div>
+            <div class="card p-3 mb-4">
+                <div class="row g-2 align-items-center">
+                    <div class="col-12 col-sm-4"><input type="date" class="form-control form-control-sm" id="attendanceDatePicker"></div>
+                    <div class="col-12 col-sm-4">
+                        <select class="form-select form-select-sm" id="attendanceDeptFilter">
+                            <option value="">All Departments</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="app.loadAttendanceRecords()"><i class="bi bi-search me-1"></i> Search</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead><tr><th>Employee</th><th>Department</th><th>Date</th><th>Check-In</th><th>Check-Out</th><th>Status</th><th>Remarks</th></tr></thead>
+                            <tbody id="attendanceTableBody"><tr><td colspan="7" class="text-center py-4 text-muted">No attendance records found for this date.</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>        <!-- 9. LEAVE MANAGEMENT VIEW -->
+        <div id="view-leaves" class="content-view d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold text-navy mb-1">Leave Requests & Authorizations</h4>
+                    <p class="text-muted small mb-0">Review employee absence requests and update quotas.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead><tr><th>Employee</th><th>Department</th><th>Type</th><th>Duration</th><th>Days</th><th>Reason</th><th>Status</th><th class="text-end">Action</th></tr></thead>
+                            <tbody id="leavesTableBody"><tr><td colspan="8" class="text-center py-4 text-muted">No leave requests found.</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10. REPORTS VIEW -->
+        <div id="view-reports" class="content-view d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold text-navy mb-1">Analytical Reports</h4>
+                    <p class="text-muted small mb-0">Export payroll logs, attendance rosters, and leave statistics.</p>
+                </div>
+            </div>
+            <ul class="nav nav-pills mb-4" id="reportTabs">
+                <li class="nav-item"><button class="nav-link active" onclick="app.switchReportTab('payroll')"><i class="bi bi-receipt me-1"></i> Monthly Payroll</button></li>
+                <li class="nav-item"><button class="nav-link" onclick="app.switchReportTab('departments')"><i class="bi bi-diagram-3 me-1"></i> Department Roster</button></li>
+                <li class="nav-item"><button class="nav-link" onclick="app.switchReportTab('attendance')"><i class="bi bi-calendar-check me-1"></i> Monthly Attendance</button></li>
+                <li class="nav-item"><button class="nav-link" onclick="app.switchReportTab('leaves')"><i class="bi bi-calendar-range me-1"></i> Leave Balances</button></li>
+            </ul>
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="card-title" id="reportTitle">Monthly Payroll Summary Report</h6>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="window.print()"><i class="bi bi-printer me-1"></i> Print</button>
+                        <button class="btn btn-sm btn-outline-success" onclick="app.exportReportTableToCSV()"><i class="bi bi-file-earmark-spreadsheet me-1"></i> Export CSV</button>
+                    </div>
+                </div>
+                <div class="card-body p-0" id="reportContentArea"><div class="p-4 text-center text-muted">Select a report tab above to view records.</div></div>
+            </div>
+        </div>
+
+        <!-- 11. PROFILE VIEW -->
+        <div id="view-profile" class="content-view d-none">
+            <div class="row g-4">
+                <div class="col-12 col-md-4">
+                    <div class="card text-center p-4">
+                        <div class="avatar-circle mx-auto mb-3" style="width: 72px; height: 72px; font-size: 28px;" id="profileAvatarBig">U</div>
+                        <h5 class="fw-bold text-navy mb-1" id="profileCardName">User Name</h5>
+                        <p class="text-muted small mb-2" id="profileCardDesignation">Designation</p>
+                        <div><span class="badge bg-primary-subtle text-primary border" id="profileCardRole">ROLE</span></div>
+                        <hr class="my-3">
+                        <div class="text-start small">
+                            <div class="mb-2"><strong class="text-muted">Employee Code:</strong> <span id="profileCardCode">-</span></div>
+                            <div class="mb-2"><strong class="text-muted">Department:</strong> <span id="profileCardDept">-</span></div>
+                            <div class="mb-2"><strong class="text-muted">Joining Date:</strong> <span id="profileCardJoin">-</span></div>
+                            <div><strong class="text-muted">Status:</strong> <span class="badge badge-active" id="profileCardStatus">ACTIVE</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-header"><h6 class="card-title"><i class="bi bi-person-lines-fill me-2 text-primary"></i> Contact Details</h6></div>
+                        <div class="card-body">
+                            <form id="profileForm" onsubmit="app.updateProfile(event)">
+                                <div class="row g-3">
+                                    <div class="col-12 col-sm-6"><label class="form-label small fw-semibold">Email</label><input type="email" class="form-control form-control-sm bg-light" id="profileEmail" readonly></div>
+                                    <div class="col-12 col-sm-6"><label class="form-label small fw-semibold">Phone</label><input type="text" class="form-control form-control-sm" id="profilePhone"></div>
+                                    <div class="col-12"><label class="form-label small fw-semibold">Address</label><textarea class="form-control form-control-sm" id="profileAddress" rows="2"></textarea></div>
+                                    <div class="col-12 text-end"><button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-save me-1"></i> Save Contact</button></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h6 class="card-title"><i class="bi bi-shield-lock me-2 text-primary"></i> Change Password</h6></div>
+                        <div class="card-body">
+                            <form id="changePasswordForm" onsubmit="app.changePassword(event)">
+                                <div class="row g-3">
+                                    <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">Current</label><input type="password" class="form-control form-control-sm" id="currentPassword" required></div>
+                                    <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">New</label><input type="password" class="form-control form-control-sm" id="newPassword" minlength="6" required></div>
+                                    <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">Confirm</label><input type="password" class="form-control form-control-sm" id="confirmNewPassword" minlength="6" required></div>
+                                    <div class="col-12 text-end"><button type="submit" class="btn btn-warning btn-sm text-dark fw-semibold"><i class="bi bi-key-fill me-1"></i> Update Password</button></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 12. USERS (ADMIN ONLY) -->
+        <div id="view-users" class="content-view d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold text-navy mb-1">User Account Administration</h4>
+                    <p class="text-muted small mb-0">Role configurations, account statuses, and system access.</p>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="app.showAddUserModal()"><i class="bi bi-person-plus-fill me-1"></i> Add User</button>
+            </div>
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead><tr><th>Username</th><th>Name</th><th>Role</th><th>Linked Staff</th><th>Status</th><th class="text-end">Action</th></tr></thead>
+                            <tbody id="usersTableBody"><tr><td colspan="6" class="text-center py-4 text-muted">No user accounts found.</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUDIT LOGS (ADMIN ONLY) -->
+        <div id="view-audit-logs" class="content-view d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold text-navy mb-1">System Audit Logs</h4>
+                    <p class="text-muted small mb-0">Track essential administrative operations, record changes, and payroll actions.</p>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary" onclick="app.loadAuditLogs()"><i class="bi bi-arrow-clockwise me-1"></i> Refresh</button>
+            </div>
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-custom mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Action</th>
+                                    <th>Module</th>
+                                    <th>Performed By</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auditLogsTableBody">
+                                <tr><td colspan="5" class="text-center py-4 text-muted">No audit logs recorded yet.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 13. NOTIFICATIONS VIEW -->
+        <div id="view-notifications" class="content-view d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold text-navy mb-1">System Notifications</h4>
+                    <p class="text-muted small mb-0">System announcements, leave approvals, and payroll notifications.</p>
+                </div>
+                <button class="btn btn-sm btn-outline-primary" onclick="app.markAllNotificationsRead()"><i class="bi bi-check-all me-1"></i> Mark All Read</button>
+            </div>
+            <div class="card">
+                <div class="list-group list-group-flush" id="notificationsListFull"><div class="p-4 text-center text-muted">Loading notifications...</div></div>
+            </div>
+        </div>
+    </main>
+</div><!-- ==================== MODALS ==================== -->
+
+<!-- Modal: Add / Edit Employee -->
+<div class="modal fade" id="employeeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title" id="employeeModalTitle">Add New Employee</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form id="employeeForm" onsubmit="app.saveEmployee(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="empModalId">
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">Employee Code *</label><input type="text" class="form-control form-control-sm" id="empModalCode" placeholder="EMP007" required></div>
+                        <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">First Name *</label><input type="text" class="form-control form-control-sm" id="empModalFirst" required></div>
+                        <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">Last Name *</label><input type="text" class="form-control form-control-sm" id="empModalLast" required></div>
+                        <div class="col-12 col-sm-6"><label class="form-label small fw-semibold">Email *</label><input type="email" class="form-control form-control-sm" id="empModalEmail" required></div>
+                        <div class="col-12 col-sm-6"><label class="form-label small fw-semibold">Phone</label><input type="text" class="form-control form-control-sm" id="empModalPhone"></div>
+                        <div class="col-12 col-sm-4">
+                            <label class="form-label small fw-semibold">Gender</label>
+                            <select class="form-select form-select-sm" id="empModalGender"><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select>
+                        </div>
+                        <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">Date of Birth</label><input type="date" class="form-control form-control-sm" id="empModalDob"></div>
+                        <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">Joining Date *</label><input type="date" class="form-control form-control-sm" id="empModalJoining" required></div>
+                        <div class="col-12 col-sm-6"><label class="form-label small fw-semibold">Department *</label><select class="form-select form-select-sm" id="empModalDept" required></select></div>
+                        <div class="col-12 col-sm-6"><label class="form-label small fw-semibold">Designation *</label><input type="text" class="form-control form-control-sm" id="empModalDesignation" required></div>
+                        <div class="col-12"><label class="form-label small fw-semibold">Address</label><textarea class="form-control form-control-sm" id="empModalAddress" rows="2"></textarea></div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label small fw-semibold">Status</label>
+                            <select class="form-select form-select-sm" id="empModalStatus"><option value="ACTIVE">ACTIVE</option><option value="INACTIVE">INACTIVE</option><option value="ON_LEAVE">ON_LEAVE</option></select>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label small fw-semibold">Starting Basic Salary (₹)</label>
+                            <input type="number" step="0.01" class="form-control form-control-sm" id="empModalBasicSalary" placeholder="e.g. 45000">
+                            <div class="form-text" style="font-size: 11px;">Initial salary structure will be configured automatically.</div>
+                        </div>
+
+                        <!-- Login Account Configuration (Only for New Employee) -->
+                        <div class="col-12" id="empModalAccountContainer">
+                            <div class="border rounded p-3 bg-light">
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="empModalCreateAccount" checked onchange="document.getElementById('empModalAccountFields').classList.toggle('d-none', !this.checked)">
+                                    <label class="form-check-label fw-bold small text-navy" for="empModalCreateAccount">
+                                        <i class="bi bi-shield-lock me-1 text-primary"></i> Create System Login Account
+                                    </label>
+                                </div>
+                                <div class="row g-2" id="empModalAccountFields">
+                                    <div class="col-12 col-sm-4">
+                                        <label class="form-label small fw-semibold">Username *</label>
+                                        <input type="text" class="form-control form-control-sm" id="empModalUsername" placeholder="e.g. john.doe">
+                                    </div>
+                                    <div class="col-12 col-sm-4">
+                                        <label class="form-label small fw-semibold">System Role *</label>
+                                        <select class="form-select form-select-sm" id="empModalRole">
+                                            <option value="ROLE_EMPLOYEE" selected>EMPLOYEE (Self-Service)</option>
+                                            <option value="ROLE_MANAGER">MANAGER (Team Authorizations)</option>
+                                            <option value="ROLE_HR">HR (Operations & Payroll)</option>
+                                            <option value="ROLE_ADMIN">ADMIN (Full Control)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-sm-4">
+                                        <label class="form-label small fw-semibold">Initial Password *</label>
+                                        <input type="password" class="form-control form-control-sm" id="empModalPassword" placeholder="Min 6 characters">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary btn-sm">Save Employee</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Add User Account (Admin Standalone) -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-person-plus text-primary me-2"></i> Create User Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="userForm" onsubmit="app.saveUser(event)">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Username *</label>
+                        <input type="text" class="form-control form-control-sm" id="newUserName" placeholder="e.g. jdoe" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Email *</label>
+                        <input type="email" class="form-control form-control-sm" id="newUserEmail" placeholder="user@company.com" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">System Role *</label>
+                        <select class="form-select form-select-sm" id="newUserRole" required>
+                            <option value="ROLE_ADMIN">ADMIN (Full System Access)</option>
+                            <option value="ROLE_HR">HR (Personnel & Payroll)</option>
+                            <option value="ROLE_MANAGER">MANAGER (Department Approvals)</option>
+                            <option value="ROLE_EMPLOYEE">EMPLOYEE (Self-Service)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Password *</label>
+                        <input type="password" class="form-control form-control-sm" id="newUserPassword" placeholder="Min 6 characters" minlength="6" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: View Details -->
+<div class="modal fade" id="employeeDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Employee Details</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="empDetailsBody"></div><div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div></div></div>
+</div>
+
+<!-- Modal: Department -->
+<div class="modal fade" id="departmentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title" id="deptModalTitle">Department</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form id="deptForm" onsubmit="app.saveDepartment(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="deptModalId">
+                    <div class="mb-3"><label class="form-label small fw-semibold">Code *</label><input type="text" class="form-control form-control-sm" id="deptModalCode" required></div>
+                    <div class="mb-3"><label class="form-label small fw-semibold">Name *</label><input type="text" class="form-control form-control-sm" id="deptModalName" required></div>
+                    <div class="mb-3"><label class="form-label small fw-semibold">Assigned Manager</label><select class="form-select form-select-sm" id="deptModalManager"><option value="">-- None --</option></select></div>
+                    <div class="mb-3"><label class="form-label small fw-semibold">Description</label><textarea class="form-control form-control-sm" id="deptModalDesc" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary btn-sm">Save Department</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Salary Structure -->
+<div class="modal fade" id="salaryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Salary Structure: <span id="salaryModalEmpName" class="text-primary"></span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form id="salaryForm" onsubmit="app.saveSalaryStructure(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="salaryEmpId">
+                    <div class="row g-3">
+                        <div class="col-12"><h6 class="text-primary fw-bold border-bottom pb-1">Earnings (Monthly)</h6></div>
+                        <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">Basic Salary *</label><input type="number" step="0.01" class="form-control form-control-sm sal-calc" id="salBasic" required></div>
+                        <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">HRA</label><input type="number" step="0.01" class="form-control form-control-sm sal-calc" id="salHra"></div>
+                        <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">DA</label><input type="number" step="0.01" class="form-control form-control-sm sal-calc" id="salDa"></div>
+                        <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">Bonus</label><input type="number" step="0.01" class="form-control form-control-sm sal-calc" id="salBonus"></div>
+                        <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">Overtime Rate/hr</label><input type="number" step="0.01" class="form-control form-control-sm" id="salOtRate"></div>
+                        <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">Other Allowances</label><input type="number" step="0.01" class="form-control form-control-sm sal-calc" id="salAllowances"></div>
+
+                        <div class="col-12 mt-3"><h6 class="text-danger fw-bold border-bottom pb-1">Deductions (Monthly)</h6></div>
+                        <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">PF</label><input type="number" step="0.01" class="form-control form-control-sm sal-calc" id="salPf"></div>
+                        <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">Income Tax (TDS)</label><input type="number" step="0.01" class="form-control form-control-sm sal-calc" id="salTax"></div>
+                        <div class="col-12 col-sm-4"><label class="form-label small fw-semibold">Other Deductions</label><input type="number" step="0.01" class="form-control form-control-sm sal-calc" id="salOtherDed"></div>
+
+                        <div class="col-12 mt-2">
+                            <label class="form-label small fw-semibold">Revision Reason / Remarks</label>
+                            <input type="text" class="form-control form-control-sm" id="salReason" placeholder="e.g. Annual appraisal, promotion, performance adjustment">
+                            <div class="form-text" style="font-size: 11px;">Tracked in salary revision history and audit records.</div>
+                        </div>
+
+                        <div class="col-12 mt-3">
+                            <div class="bg-light p-3 rounded border d-flex justify-content-between align-items-center">
+                                <div><div class="small text-muted">Gross Earnings:</div><h5 class="fw-bold text-dark m-0" id="salGrossCalc">₹0.00</h5></div>
+                                <div><div class="small text-muted">Total Deductions:</div><h5 class="fw-bold text-danger m-0" id="salDedCalc">- ₹0.00</h5></div>
+                                <div><div class="small text-muted">Take-Home Net:</div><h4 class="fw-bold text-success m-0" id="salNetCalc">₹0.00</h4></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary btn-sm">Save Structure</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Salary Revision History -->
+<div class="modal fade" id="salaryHistoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-clock-history text-primary me-2"></i> Salary Revision History: <span id="salaryHistoryEmpName" class="text-primary"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0">
+                        <thead>
+                            <tr>
+                                <th>Effective Date</th>
+                                <th>Previous Gross</th>
+                                <th>New Gross</th>
+                                <th>New Net</th>
+                                <th>Reason</th>
+                                <th>Updated By</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salaryHistoryTableBody">
+                            <tr><td colspan="6" class="text-center py-4 text-muted">No salary revisions recorded for this employee yet.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Process Payroll -->
+<div class="modal fade" id="processPayrollModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Process Monthly Payroll</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form id="processPayrollForm" onsubmit="app.submitProcessPayroll(event)">
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label small fw-semibold">Employee *</label><select class="form-select form-select-sm" id="procEmpSelect" required onchange="app.onPayrollEmpChange()"></select></div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold">Month *</label>
+                            <select class="form-select form-select-sm" id="procMonth" required>
+                                <option value="1">1 - January</option><option value="2">2 - February</option><option value="3">3 - March</option>
+                                <option value="4">4 - April</option><option value="5">5 - May</option><option value="6">6 - June</option>
+                                <option value="7">7 - July</option><option value="8">8 - August</option><option value="9" selected>9 - September</option>
+                                <option value="10">10 - October</option><option value="11">11 - November</option><option value="12">12 - December</option>
+                            </select>
+                        </div>
+                        <div class="col-6"><label class="form-label small fw-semibold">Year *</label><input type="number" class="form-control form-control-sm" id="procYear" value="2026" required></div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6"><label class="form-label small fw-semibold">Overtime Hours</label><input type="number" step="0.5" class="form-control form-control-sm" id="procOtHours" value="0"></div>
+                        <div class="col-6"><label class="form-label small fw-semibold">Extra Bonus</label><input type="number" step="0.01" class="form-control form-control-sm" id="procBonus" value="0"></div>
+                    </div>
+                    <div class="mb-3"><label class="form-label small fw-semibold">Extra Deductions</label><input type="number" step="0.01" class="form-control form-control-sm" id="procDeductions" value="0"></div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Payment Method</label>
+                        <select class="form-select form-select-sm" id="procPaymentMethod"><option value="BANK_TRANSFER">Bank Transfer (NEFT/RTGS)</option><option value="CHEQUE">Cheque</option><option value="CASH">Cash</option></select>
+                    </div>
+                    <div class="alert alert-info py-2 px-3 small" id="payrollBasePreview">Select an employee to preview payroll calculations.</div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary btn-sm">Process & Save</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: View Payslip (Preview + Print + Download PDF) -->
+<div class="modal fade" id="payslipModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title"><i class="bi bi-file-earmark-text text-primary me-2"></i> Salary Payslip Preview</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body p-4" id="payslipModalContent"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="app.printPayslipModal()"><i class="bi bi-printer me-1"></i> Print</button>
+                <button type="button" class="btn btn-primary btn-sm" id="modalDownloadPdfBtn"><i class="bi bi-download me-1"></i> Download PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Apply Leave -->
+<div class="modal fade" id="applyLeaveModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Apply For Leave</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form id="applyLeaveForm" onsubmit="app.submitApplyLeave(event)">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Leave Category *</label>
+                        <select class="form-select form-select-sm" id="leaveModalType" required>
+                            <option value="CASUAL">Casual Leave</option><option value="SICK">Sick Leave</option>
+                            <option value="ANNUAL">Annual Leave</option><option value="UNPAID">Leave Without Pay</option>
+                        </select>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6"><label class="form-label small fw-semibold">Start Date *</label><input type="date" class="form-control form-control-sm" id="leaveModalStart" required onchange="app.calcLeaveDays()"></div>
+                        <div class="col-6"><label class="form-label small fw-semibold">End Date *</label><input type="date" class="form-control form-control-sm" id="leaveModalEnd" required onchange="app.calcLeaveDays()"></div>
+                    </div>
+                    <div class="mb-3 text-muted small">Total Days: <strong id="leaveModalDaysText" class="text-navy">1 Day</strong></div>
+                    <div class="mb-3"><label class="form-label small fw-semibold">Reason *</label><textarea class="form-control form-control-sm" id="leaveModalReason" rows="3" required></textarea></div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary btn-sm">Submit Request</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Review Leave -->
+<div class="modal fade" id="reviewLeaveModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Review Leave Application</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form id="reviewLeaveForm" onsubmit="app.submitReviewLeave(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="revLeaveId">
+                    <div id="revLeaveSummary" class="bg-light p-3 rounded mb-3 small"></div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Decision *</label>
+                        <select class="form-select form-select-sm" id="revLeaveDecision" required>
+                            <option value="APPROVED">APPROVE Request</option>
+                            <option value="REJECTED">REJECT Request</option>
+                        </select>
+                    </div>
+                    <div class="mb-3"><label class="form-label small fw-semibold">Manager Remarks</label><textarea class="form-control form-control-sm" id="revLeaveRemarks" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary btn-sm">Save Decision</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Mark Attendance -->
+<div class="modal fade" id="markAttendanceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Mark Attendance</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form id="markAttendanceForm" onsubmit="app.submitMarkAttendance(event)">
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label small fw-semibold">Employee *</label><select class="form-select form-select-sm" id="markAttEmp" required></select></div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6"><label class="form-label small fw-semibold">Date *</label><input type="date" class="form-control form-control-sm" id="markAttDate" required></div>
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold">Status *</label>
+                            <select class="form-select form-select-sm" id="markAttStatus" required>
+                                <option value="PRESENT">PRESENT</option><option value="LATE">LATE</option>
+                                <option value="ABSENT">ABSENT</option><option value="ON_LEAVE">ON_LEAVE</option><option value="HALF_DAY">HALF_DAY</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6"><label class="form-label small fw-semibold">Check-In</label><input type="time" class="form-control form-control-sm" id="markAttIn"></div>
+                        <div class="col-6"><label class="form-label small fw-semibold">Check-Out</label><input type="time" class="form-control form-control-sm" id="markAttOut"></div>
+                    </div>
+                    <div class="mb-3"><label class="form-label small fw-semibold">Remarks</label><input type="text" class="form-control form-control-sm" id="markAttRemarks"></div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary btn-sm">Save Attendance</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Add User Account (Admin Only) -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-navy text-white">
+                <h5 class="modal-title fw-bold" id="userModalTitle"><i class="bi bi-person-plus-fill me-2"></i>Create System User Account</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="userForm" onsubmit="app.saveUser(event)">
+                <div class="modal-body p-4">
+                    <div class="alert alert-info py-2 small mb-3">
+                        <i class="bi bi-info-circle me-1"></i> Provision a complete login account. Link existing staff records to automatically associate attendance, payroll, and department permissions.
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Full Name *</label>
+                            <input type="text" class="form-control form-control-sm" id="newUserFullName" required placeholder="e.g. Jane Doe">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Role *</label>
+                            <select class="form-select form-select-sm" id="newUserRole" required onchange="app.onUserRoleChange()">
+                                <option value="ROLE_EMPLOYEE" selected>EMPLOYEE (Self-Service)</option>
+                                <option value="ROLE_MANAGER">MANAGER (Department Team Lead)</option>
+                                <option value="ROLE_HR">HR (Personnel & Operations)</option>
+                                <option value="ROLE_ADMIN">ADMIN (Full System Administrator)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Username *</label>
+                            <input type="text" class="form-control form-control-sm" id="newUserName" required minlength="3" maxlength="50" placeholder="e.g. jdoe">
+                            <div class="form-text small">Used for system login. Must be unique.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Work Email *</label>
+                            <input type="email" class="form-control form-control-sm" id="newUserEmail" required placeholder="e.g. jdoe@company.com">
+                            <div class="form-text small">Users can sign in using either username or work email.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Password *</label>
+                            <input type="password" class="form-control form-control-sm" id="newUserPassword" required minlength="6" placeholder="Min 6 characters">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Confirm Password *</label>
+                            <input type="password" class="form-control form-control-sm" id="newUserConfirmPassword" required minlength="6" placeholder="Re-enter password">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" id="newUserDeptLabel">Department *</label>
+                            <select class="form-select form-select-sm" id="newUserDept" onchange="app.onUserDeptChange()">
+                                <option value="">-- Select Department --</option>
+                            </select>
+                            <div class="form-text small" id="newUserDeptHelp">Required for Manager & Employee roles.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" id="newUserEmpLabel">Link Employee Record *</label>
+                            <select class="form-select form-select-sm" id="newUserEmp" onchange="app.onUserEmpChange()">
+                                <option value="">-- Select Existing Employee --</option>
+                            </select>
+                            <div class="form-text small" id="newUserEmpHelp">Links login to employee payroll, leaves, and attendance.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Account Status *</label>
+                            <select class="form-select form-select-sm" id="newUserStatus" required>
+                                <option value="ACTIVE" selected>ACTIVE (Login Allowed)</option>
+                                <option value="INACTIVE">INACTIVE (Deactivated / Login Blocked)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id="saveUserBtn">
+                        <i class="bi bi-check-circle me-1"></i> Create User Account
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
