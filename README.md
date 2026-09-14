@@ -1,4 +1,4 @@
-# Nexus HRMS - Enterprise Payroll Management System
+# PayZen - Enterprise Payroll Management System
 
 A complete, production-ready, professional Web-Based Payroll and HR Management Platform built with **Java 25 LTS**, **Spring Boot 3.3.6**, **Spring Security 6**, **Spring Data JPA / Hibernate**, **MySQL 9.6**, **OpenPDF**, and **Bootstrap 5.3**.
 
